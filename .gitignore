@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+
+# Local data pipeline and generated build output
+/data/
+/scripts/
+web/dist/
+outputs/
+
+# Data-builder audit artifacts not fetched by the browser
+/web/public/data/fees/manifests/
+/web/public/data/fees/releases/*/build-report.*.json
+
+# Test and coverage output
+playwright-report/
+test-results/
+coverage/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+.npmrc
+!.npmrc.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+playwright/.auth/
+storage-state*.json
+
+# Editor, OS, and temporary files
+.DS_Store
+.idea/
+.vscode/
+.agents/
+.codex/
+*.log
+*.tmp
+*.swp
+*.tsbuildinfo
+*~
+
+# Python local state
+__pycache__/
+*.py[cod]
+.venv/

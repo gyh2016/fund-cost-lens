@@ -1,0 +1,8 @@
+/data/fees/manifest.json
+  Cache-Control: no-cache
+
+/data/fees/releases/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
