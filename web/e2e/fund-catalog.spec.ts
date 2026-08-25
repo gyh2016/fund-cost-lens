@@ -5,7 +5,7 @@ test('列表搜索、可选场景和详情', async ({ page }, testInfo) => {
   await page.goto('/')
 
   await expect(
-    page.getByRole('heading', { name: 'Fund Cost Lens' }),
+    page.getByRole('heading', { name: '基金费率对比' }),
   ).toBeVisible()
   await expect(page.getByLabel('数据概览')).toContainText('749')
 
@@ -27,6 +27,30 @@ test('列表搜索、可选场景和详情', async ({ page }, testInfo) => {
     page.getByRole('heading', { name: '万家北证50成份指数发起式A' }),
   ).toBeVisible()
   await expect(page.getByRole('heading', { name: '数据来源' })).toBeVisible()
+})
+
+test('标题层级和色彩模式切换会持久保留', async ({ page }) => {
+  await page.goto('/')
+
+  await expect(
+    page.getByRole('heading', { level: 1, name: '基金费率对比' }),
+  ).toBeVisible()
+  await expect(page.locator('main').getByText('Fund Cost Lens')).toBeVisible()
+
+  await page.getByRole('button', { name: '深色模式' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect.poll(() =>
+    page.evaluate(() => localStorage.getItem('fund-cost-lens-theme')),
+  ).toBe('dark')
+
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(
+    page.getByRole('button', { name: '深色模式' }),
+  ).toHaveAttribute('aria-pressed', 'true')
+
+  await page.getByRole('button', { name: '浅色模式' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
 })
 
 test('移动端使用基金卡片并可加载更多', async ({ page }, testInfo) => {
@@ -54,7 +78,8 @@ test('639、640、1024 响应式断点与筛选面板切换', async ({ page }, t
   await expect(page.getByRole('table', { name: /人民币指数基金费率列表/ })).toBeHidden()
 
   await page.getByRole('button', { name: '筛选和排序' }).click()
-  const filterDialog = page.getByRole('dialog', { name: '筛选和排序' })
+  const filterDialog = page.locator('dialog[aria-labelledby]')
+    .filter({ hasText: '筛选和排序' })
   await expect(filterDialog).toBeVisible()
   await page.setViewportSize({ width: 640, height: 900 })
   await expect(filterDialog).not.toHaveAttribute('open', '')

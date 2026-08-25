@@ -1,10 +1,14 @@
 import type { FundDetailView, PageLoadState } from '../components/types'
+import type { ThemeMode } from '../app/theme'
 import { FundDetailContent } from '../components/FundDetailContent'
+import { ThemeToggle } from '../components/ThemeToggle'
 import '../styles/global.css'
 import styles from '../styles/catalog.module.css'
 
 export interface FundDetailPageProps {
   state: PageLoadState
+  theme: ThemeMode
+  onThemeChange: (theme: ThemeMode) => void
   detail?: FundDetailView
   errorMessage?: string
   releaseId?: string
@@ -19,6 +23,8 @@ export interface FundDetailPageProps {
 
 export function FundDetailPage({
   state,
+  theme,
+  onThemeChange,
   detail,
   errorMessage,
   releaseId,
@@ -33,6 +39,8 @@ export function FundDetailPage({
   return (
     <div className={styles.appShell}>
       <AppTopbar
+        theme={theme}
+        onThemeChange={onThemeChange}
         releaseId={releaseId}
         datasetUpdatedAt={datasetUpdatedAt}
         fundTotal={fundTotal}
@@ -57,12 +65,16 @@ export function FundDetailPage({
 }
 
 export interface AppTopbarProps {
+  theme: ThemeMode
+  onThemeChange: (theme: ThemeMode) => void
   releaseId?: string
   datasetUpdatedAt?: string
   fundTotal?: number
 }
 
 export function AppTopbar({
+  theme,
+  onThemeChange,
   releaseId,
   datasetUpdatedAt,
   fundTotal,
@@ -75,26 +87,29 @@ export function AppTopbar({
     <nav className={styles.topbar} aria-label="应用导航">
       <div className={styles.brand}>
         <span className={styles.brandMark} aria-hidden="true">F</span>
-        <span><strong>Fund Cost Lens</strong><small>基金费率对比</small></span>
+        <span><strong>基金费率对比</strong><small>Fund Cost Lens</small></span>
       </div>
-      {hasOverview ? (
-        <dl className={styles.datasetMeta} aria-label="数据概览">
-          <div>
-            <dt>数据版本</dt>
-            <dd>{releaseId}</dd>
-          </div>
-          <div>
-            <dt>数据日期</dt>
-            <dd>{datasetUpdatedAt}</dd>
-          </div>
-          <div>
-            <dt>基金总数</dt>
-            <dd>{fundTotal?.toLocaleString('zh-CN')}</dd>
-          </div>
-        </dl>
-      ) : (
-        <p className={styles.datasetMetaLoading}>正在读取数据</p>
-      )}
+      <div className={styles.topbarActions}>
+        {hasOverview ? (
+          <dl className={styles.datasetMeta} aria-label="数据概览">
+            <div>
+              <dt>数据版本</dt>
+              <dd>{releaseId}</dd>
+            </div>
+            <div>
+              <dt>数据日期</dt>
+              <dd>{datasetUpdatedAt}</dd>
+            </div>
+            <div>
+              <dt>基金总数</dt>
+              <dd>{fundTotal?.toLocaleString('zh-CN')}</dd>
+            </div>
+          </dl>
+        ) : (
+          <p className={styles.datasetMetaLoading}>正在读取数据</p>
+        )}
+        <ThemeToggle value={theme} onChange={onThemeChange} />
+      </div>
     </nav>
   )
 }

@@ -34,6 +34,7 @@ import {
   serializeListUrlState,
   type ListUrlState,
 } from './url-state'
+import { useTheme, type ThemeMode } from './theme'
 import {
   calculateFundScenario,
   resolveScenarioControls,
@@ -172,10 +173,14 @@ function overviewFor(
 function FundListController({
   dataset,
   retryDataset,
+  theme,
+  onThemeChange,
   captureReturnFocus,
 }: {
   dataset: ReturnType<typeof useFeeDataset>['state']
   retryDataset: () => void
+  theme: ThemeMode
+  onThemeChange: (theme: ThemeMode) => void
   captureReturnFocus: (shareCode: string) => void
 }) {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -458,6 +463,8 @@ function FundListController({
   return (
     <FundListPage
       state={state}
+      theme={theme}
+      onThemeChange={onThemeChange}
       overview={
         dataset.status === 'ready'
           ? overviewFor(dataset.manifest, cnyFunds)
@@ -567,6 +574,8 @@ interface DetailControllerProps {
   dataset: ReturnType<typeof useFeeDataset>['state']
   retryDataset: () => void
   standalone: boolean
+  theme: ThemeMode
+  onThemeChange: (theme: ThemeMode) => void
   onClose?: () => void
 }
 
@@ -574,6 +583,8 @@ function DetailController({
   dataset,
   retryDataset,
   standalone,
+  theme,
+  onThemeChange,
   onClose,
 }: DetailControllerProps) {
   const { shareCode = '' } = useParams()
@@ -669,6 +680,8 @@ function DetailController({
     return (
       <FundDetailPage
         state={state}
+        theme={theme}
+        onThemeChange={onThemeChange}
         detail={detail}
         errorMessage={errorMessage}
         releaseId={
@@ -719,6 +732,7 @@ function DetailController({
 
 function RoutedApp() {
   const dataset = useFeeDataset()
+  const { theme, setTheme } = useTheme()
   const location = useLocation()
   const navigate = useNavigate()
   const returnFocusRef = useRef<{
@@ -754,6 +768,8 @@ function RoutedApp() {
             <FundListController
               dataset={dataset.state}
               retryDataset={dataset.retry}
+              theme={theme}
+              onThemeChange={setTheme}
               captureReturnFocus={(shareCode) => {
                 const element =
                   document.activeElement instanceof HTMLElement
@@ -776,6 +792,8 @@ function RoutedApp() {
               dataset={dataset.state}
               retryDataset={dataset.retry}
               standalone
+              theme={theme}
+              onThemeChange={setTheme}
             />
           }
         />
@@ -785,6 +803,8 @@ function RoutedApp() {
             <FundListController
               dataset={dataset.state}
               retryDataset={dataset.retry}
+              theme={theme}
+              onThemeChange={setTheme}
               captureReturnFocus={() => undefined}
             />
           }
@@ -799,6 +819,8 @@ function RoutedApp() {
                 dataset={dataset.state}
                 retryDataset={dataset.retry}
                 standalone={false}
+                theme={theme}
+                onThemeChange={setTheme}
                 onClose={() => {
                   const returnTarget = returnFocusRef.current
                   navigate(-1)

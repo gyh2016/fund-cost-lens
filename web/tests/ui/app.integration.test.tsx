@@ -256,7 +256,7 @@ describe('完整应用', () => {
     expect(within(indexMenu).queryByText('沪深300')).toBeNull()
 
     await user.click(
-      screen.getByRole('heading', { name: 'Fund Cost Lens' }),
+      screen.getByRole('heading', { name: '基金费率对比' }),
     )
     expect(indexMenu.open).toBe(false)
 
