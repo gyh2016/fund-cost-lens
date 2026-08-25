@@ -11,6 +11,7 @@ import type {
   ScenarioControlValue,
   SortToken,
 } from '../components/types'
+import type { ThemeMode } from '../app/theme'
 import { AppTopbar } from './FundDetailPage'
 import { ScenarioResourceBanner, StatePanel } from '../components/DataStatus'
 import { ScenarioFeeControls } from '../components/ScenarioFeeControls'
@@ -22,6 +23,8 @@ import styles from '../styles/catalog.module.css'
 
 export interface FundListPageProps {
   state: PageLoadState
+  theme: ThemeMode
+  onThemeChange: (theme: ThemeMode) => void
   overview?: DatasetOverview
   errorMessage?: string
   desktopRows: readonly FundListRow[]
@@ -55,6 +58,8 @@ export interface FundListPageProps {
 
 export function FundListPage({
   state,
+  theme,
+  onThemeChange,
   overview,
   errorMessage,
   desktopRows,
@@ -89,14 +94,16 @@ export function FundListPage({
   return (
     <div className={styles.appShell}>
       <AppTopbar
+        theme={theme}
+        onThemeChange={onThemeChange}
         releaseId={overview?.releaseId}
         datasetUpdatedAt={overview?.datasetUpdatedAt}
         fundTotal={overview?.currentShares}
       />
       <main className={styles.pageMain}>
         <header className={styles.pageIntro}>
-          <p className={styles.eyebrow}>基金费率对比</p>
-          <h1>Fund Cost Lens</h1>
+          <h1>基金费率对比</h1>
+          <p className={styles.pageSubtitle}>Fund Cost Lens</p>
           <p>仅比较人民币计价的普通指数基金和 ETF 联接基金，不含指数增强基金和纯场内 ETF。</p>
         </header>
 
